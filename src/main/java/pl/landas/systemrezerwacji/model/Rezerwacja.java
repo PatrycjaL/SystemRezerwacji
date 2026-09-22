@@ -12,6 +12,7 @@ public class Rezerwacja {
     private Klient klient;
     private Pracownik pracownik;
     private Usluga usluga;
+    private SlotCzasowy slotCzasowy;
 
     public Rezerwacja(String notatka, LocalDateTime dataRozpoczecia, Klient klient, Pracownik pracownik, Usluga usluga) {
         this.statusRezerwacji = StatusRezerwacji.UTWORZONA;
@@ -22,6 +23,15 @@ public class Rezerwacja {
         setUsluga(usluga);
         setDataRozpoczecia(dataRozpoczecia);
         setDataZakonczenia();
+    }
+
+    public Rezerwacja(String notatka, Klient klient, SlotCzasowy slotCzasowy) {
+        this.statusRezerwacji = StatusRezerwacji.UTWORZONA;
+        setNotatkaDoRezerwacji(notatka);
+        generujTokenZarzadzania();
+        setKlient(klient);
+        setSlotCzasowy(slotCzasowy);
+        setPracownik(slotCzasowy.getPracownik());
     }
 
     public StatusRezerwacji getStatusRezerwacji() {
@@ -56,7 +66,11 @@ public class Rezerwacja {
         return usluga;
     }
 
-    public void setNotatkaDoRezerwacji(String notatka) {
+    public SlotCzasowy getSlotCzasowy() {
+        return slotCzasowy;
+    }
+
+    private void setNotatkaDoRezerwacji(String notatka) {
         if (notatka != null && !notatka.isBlank()) {
             this.notatkaDoRezerwacji = notatka;
         } else {
@@ -64,7 +78,7 @@ public class Rezerwacja {
         }
     }
 
-    public void setDataRozpoczecia(LocalDateTime dataRozpoczecia) {
+    private void setDataRozpoczecia(LocalDateTime dataRozpoczecia) {
         if (dataRozpoczecia == null) {
             throw new IllegalArgumentException("Data rozpoczęcia rezerwacji nie może być pusta.");
         }
@@ -79,25 +93,34 @@ public class Rezerwacja {
         this.tokenZarzadzania = UUID.randomUUID().toString();
     }
 
-    public void setKlient(Klient klient) {
+    private void setKlient(Klient klient) {
         if (klient == null) {
             throw new IllegalArgumentException("Klient nie może być pusty.");
         }
         this.klient = klient;
     }
 
-    public void setPracownik(Pracownik pracownik) {
+    private void setPracownik(Pracownik pracownik) {
         if (pracownik == null) {
             throw new IllegalArgumentException("Pracownik nie może być pusty.");
         }
         this.pracownik = pracownik;
     }
 
-    public void setUsluga(Usluga usluga) {
+    private void setUsluga(Usluga usluga) {
         if (usluga == null) {
             throw new IllegalArgumentException("Usługa nie może być pusta.");
         }
         this.usluga = usluga;
+    }
+
+    private void setSlotCzasowy(SlotCzasowy slotCzasowy) {
+        if (slotCzasowy == null) {
+            throw new IllegalArgumentException("Slot czasowy nie może być pusty.");
+        }
+        this.slotCzasowy = slotCzasowy;
+        this.dataRozpoczecia = slotCzasowy.getCzasRozpoczecia();
+        this.dataZakonczenia = slotCzasowy.getCzasZakonczenia();
     }
 
     public void potwierdzRezerwacje() {
@@ -128,9 +151,31 @@ public class Rezerwacja {
             throw new IllegalStateException("Nie można zmienić terminu anulowanej rezerwacji.");
         } else if (this.statusRezerwacji == StatusRezerwacji.ZREALIZOWANA) {
             throw new IllegalStateException("Nie można zmienić terminu zrealizowanej rezerwacji.");
+        } else if (slotCzasowy != null) {
+            throw new IllegalStateException("Nie można zmienić terminu rezerwacji przypisanej do slotu czasowego.");
         }
         setDataRozpoczecia(nowyTerminRozpoczecia);
         setDataZakonczenia();
     }
 
+    public void zmienSlotCzasowy(SlotCzasowy nowySlot) {
+        if (this.statusRezerwacji == StatusRezerwacji.ANULOWANA) {
+            throw new IllegalStateException("Nie można zmienić slotu anulowanej rezerwacji.");
+        } else if (this.statusRezerwacji == StatusRezerwacji.ZREALIZOWANA) {
+            throw new IllegalStateException("Nie można zmienić slotu zrealizowanej rezerwacji.");
+        } else if (usluga != null) {
+            throw new IllegalStateException("Nie można zmienić slotu rezerwacji z przypisaną usługą.");
+        }
+        setSlotCzasowy(nowySlot);
+        setPracownik(nowySlot.getPracownik());
+    }
+
+    public void zmienNotatke(String nowaNotatka) {
+        if (this.statusRezerwacji == StatusRezerwacji.ANULOWANA) {
+            throw new IllegalStateException("Nie można zmienić notatki anulowanej rezerwacji.");
+        } else if (this.statusRezerwacji == StatusRezerwacji.ZREALIZOWANA) {
+            throw new IllegalStateException("Nie można zmienić notatki zrealizowanej rezerwacji.");
+        }
+        setNotatkaDoRezerwacji(nowaNotatka);
+    }
 }

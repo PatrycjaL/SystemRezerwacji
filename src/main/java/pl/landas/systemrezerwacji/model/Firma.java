@@ -15,8 +15,10 @@ public class Firma {
     private Wlasciciel wlasciciel;
     private List<Pracownik> listaPracownikow;
     private List<Usluga> listaUslug;
+    private TrybDzialaniaFirmy trybDzialaniaFirmy;
 
-    public Firma(String nazwaFirmy, String adresFirmy, String nip, String numerTelefonuFirmy, String emailFirmy, Wlasciciel wlasciciel) {
+    public Firma(String nazwaFirmy, String adresFirmy, String nip, String numerTelefonuFirmy,
+                 String emailFirmy, Wlasciciel wlasciciel, TrybDzialaniaFirmy trybDzialaniaFirmy) {
         setNazwaFirmy(nazwaFirmy);
         setAdresFirmy(adresFirmy);
         setNip(nip);
@@ -26,6 +28,7 @@ public class Firma {
         this.aktywna = true;
         listaPracownikow = new ArrayList<>();
         listaUslug = new ArrayList<>();
+        setTrybDzialaniaFirmy(trybDzialaniaFirmy);
     }
 
     public String getNazwaFirmy() {
@@ -62,6 +65,11 @@ public class Firma {
 
     public List<Usluga> getListaUslug() {
         return Collections.unmodifiableList(listaUslug);
+    }
+
+
+    public TrybDzialaniaFirmy getTrybDzialaniaFirmy() {
+        return trybDzialaniaFirmy;
     }
 
     public void setNazwaFirmy(String nazwaFirmy) {
@@ -126,5 +134,12 @@ public class Firma {
             throw new IllegalArgumentException("Pracownik nie może być pusty.");
         }
         listaPracownikow.add(pracownik);
+    }
+
+    private void setTrybDzialaniaFirmy(TrybDzialaniaFirmy trybDzialaniaFirmy) {
+        if(trybDzialaniaFirmy == null) {
+            throw new IllegalArgumentException("Tryb działania firmy nie może być pusty.");
+        }
+        this.trybDzialaniaFirmy = trybDzialaniaFirmy;
     }
 }
