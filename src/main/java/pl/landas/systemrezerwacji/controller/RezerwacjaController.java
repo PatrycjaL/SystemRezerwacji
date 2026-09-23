@@ -4,12 +4,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.landas.systemrezerwacji.model.Rezerwacja;
+import pl.landas.systemrezerwacji.service.RezerwacjaService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/rezerwacje")
 public class RezerwacjaController {
+
+    private final RezerwacjaService rezerwacjaService;
+
+    public RezerwacjaController(RezerwacjaService rezerwacjaService) {
+        this.rezerwacjaService = rezerwacjaService;
+    }
 
     @GetMapping
     public List<Rezerwacja> pobierzWszystkieRezerwacje() {
@@ -18,7 +25,7 @@ public class RezerwacjaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<String> pobierzRezerwacjePoId(@PathVariable int id) {
-        if (id != 1) {
+        if (!rezerwacjaService.czyRezerwacjaIstnieje(id)) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Nie znaleziono rezerwacji o ID: " + id);
