@@ -1,6 +1,16 @@
 package pl.landas.systemrezerwacji.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+
+@Entity
 public class Usluga {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String nazwa;
     private double cena;
     private int czasTrwania;
@@ -11,6 +21,13 @@ public class Usluga {
         setCena(cenaUslugi);
         setCzasTrwania(czasTrwaniaUslugi);
         this.aktywna = true;
+    }
+
+    protected Usluga() {
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getNazwa() {
