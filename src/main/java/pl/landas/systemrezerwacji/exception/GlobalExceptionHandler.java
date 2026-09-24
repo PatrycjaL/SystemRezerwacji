@@ -23,4 +23,25 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(bledy);
     }
+
+    @ExceptionHandler(EmailJuzIstniejeException.class)
+    public ResponseEntity<?> obsluzEmailJuzIstnieje(EmailJuzIstniejeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(WlascicielNieIstniejeException.class)
+    public ResponseEntity<?> obsluzWlascicielNieIstnieje(WlascicielNieIstniejeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(FirmaNieIstniejeException.class)
+    public ResponseEntity<?> obsluzFirmaNieIstnieje(FirmaNieIstniejeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
+    }
 }

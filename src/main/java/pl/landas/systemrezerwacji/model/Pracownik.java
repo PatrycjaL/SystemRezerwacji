@@ -1,17 +1,30 @@
 package pl.landas.systemrezerwacji.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class Pracownik extends Osoba{
     private String hashHasla;
     private String stanowisko;
     private String numerTelefonu;
     private boolean aktywnosc;
 
-    public Pracownik(String imie, String nazwisko, String email, String hashHasla, String stanowisko, String numerTelefonu) {
+    @ManyToOne
+    @JoinColumn(name = "firma_id", nullable = false)
+    private Firma firma;
+
+    public Pracownik(String imie, String nazwisko, String email, String hashHasla, String stanowisko, String numerTelefonu, Firma firma) {
         super(imie, nazwisko, email);
         setHashHasla(hashHasla);
         setStanowisko(stanowisko);
         setNumerTelefonu(numerTelefonu);
+        setFirma(firma);
         this.aktywnosc = true;
+    }
+
+    protected Pracownik() {
     }
 
     public String getHashHasla() {
@@ -28,6 +41,10 @@ public class Pracownik extends Osoba{
 
     public boolean isAktywny() {
         return aktywnosc;
+    }
+
+    public Firma getFirma() {
+        return firma;
     }
 
     private void setHashHasla(String hashHasla) {
@@ -49,6 +66,13 @@ public class Pracownik extends Osoba{
             throw new IllegalArgumentException("Numer telefonu nie może być pusty.");
         }
         this.numerTelefonu = numerTelefonu;
+    }
+
+    private void setFirma(Firma firma) {
+        if(firma == null) {
+            throw new IllegalArgumentException("Firma nie może być pusta.");
+        }
+        this.firma = firma;
     }
 
     public void aktywujPracownika() {

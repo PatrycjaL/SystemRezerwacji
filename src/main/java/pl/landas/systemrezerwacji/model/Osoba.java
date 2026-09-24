@@ -1,16 +1,32 @@
 package pl.landas.systemrezerwacji.model;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public abstract class Osoba {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String imie;
     private String email;
     private String nazwisko;
-
 
 
     public Osoba(String imie, String nazwisko, String email) {
         setImie(imie);
         setEmail(email);
         setNazwisko(nazwisko);
+    }
+
+    protected Osoba() {}
+
+    public Long getId() {
+        return id;
     }
 
     public String getImie() {

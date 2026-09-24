@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/uslugi")
+@RequestMapping("firmy/{firmaId}/uslugi")
 public class UslugaController {
     private final UslugaService uslugaService;
 
@@ -22,25 +22,25 @@ public class UslugaController {
     }
 
     @PostMapping
-    public ResponseEntity<Usluga> dodajUsluge(@Valid @RequestBody UslugaRequest request) {
+    public ResponseEntity<Usluga> dodajUsluge(@PathVariable Long firmaId, @Valid @RequestBody UslugaRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(uslugaService.dodajUsluge(request));
+                .body(uslugaService.dodajUsluge(firmaId, request));
     }
 
     @GetMapping
-    public List<Usluga> pobierzWszystkieUslugi() {
-        return uslugaService.pobierzWszystkieUslugi();
+    public List<Usluga> pobierzWszystkieUslugi(@PathVariable Long firmaId) {
+        return uslugaService.pobierzWszystkieUslugi(firmaId);
     }
 
     @GetMapping("/aktywne")
-    public List<Usluga> pobierzAktywneUslugi() {
-        return uslugaService.pobierzAktywneUslugi();
+    public List<Usluga> pobierzAktywneUslugi(@PathVariable Long firmaId) {
+        return uslugaService.pobierzAktywneUslugi(firmaId);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usluga> pobierzUslugePoId(@PathVariable Long id) {
-        Optional<Usluga> usluga = uslugaService.pobierzUslugePoId(id);
+    public ResponseEntity<Usluga> pobierzUslugePoId(@PathVariable Long firmaId, @PathVariable Long id) {
+        Optional<Usluga> usluga = uslugaService.pobierzUslugePoId(firmaId, id);
 
         if (usluga.isEmpty()) {
             return ResponseEntity
@@ -53,8 +53,8 @@ public class UslugaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usluga> edytujUsluge(@PathVariable Long id, @Valid @RequestBody UslugaRequest request) {
-        Optional<Usluga> zaktualizowanaUsluga = uslugaService.edytujUsluge(id, request);
+    public ResponseEntity<Usluga> edytujUsluge(@PathVariable Long firmaId, @PathVariable Long id, @Valid @RequestBody UslugaRequest request) {
+        Optional<Usluga> zaktualizowanaUsluga = uslugaService.edytujUsluge(firmaId, id, request);
 
         if (zaktualizowanaUsluga.isEmpty()) {
             return ResponseEntity
@@ -67,8 +67,8 @@ public class UslugaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Usluga> dezaktywujUsluge(@PathVariable Long id) {
-        Optional<Usluga> dezaktywowanaUsluga = uslugaService.dezaktywujUsluge(id);
+    public ResponseEntity<Usluga> dezaktywujUsluge(@PathVariable Long firmaId, @PathVariable Long id) {
+        Optional<Usluga> dezaktywowanaUsluga = uslugaService.dezaktywujUsluge(firmaId, id);
 
         if (dezaktywowanaUsluga.isEmpty()) {
             return ResponseEntity
