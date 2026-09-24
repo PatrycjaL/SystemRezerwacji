@@ -19,8 +19,8 @@ public class Firma {
     private String emailFirmy;
     private boolean aktywna;
 
-    @OneToOne
-    @JoinColumn(name = "wlasciciel_id", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "wlasciciel_id", nullable = false)
     private Wlasciciel wlasciciel;
 
     @OneToMany(mappedBy = "firma")
