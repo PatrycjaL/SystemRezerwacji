@@ -8,6 +8,8 @@ import pl.landas.systemrezerwacji.model.Wlasciciel;
 import pl.landas.systemrezerwacji.repository.FirmaRepository;
 import pl.landas.systemrezerwacji.repository.WlascicielRepository;
 
+import java.util.List;
+
 
 @Service
 public class FirmaService {
@@ -36,5 +38,9 @@ public class FirmaService {
 
         );
             return firmaRepository.save(firma);
+    }
+
+    public List<Firma> pobierzFirmyWlasciciela(Long wlascicielId) {
+        return firmaRepository.findByWlascicielId(wlascicielId);
     }
 }
