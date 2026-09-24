@@ -30,4 +30,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(WlascicielNieIstniejeException.class)
+    public ResponseEntity<?> obsluzWlascicielNieIstnieje(WlascicielNieIstniejeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
+    }
 }

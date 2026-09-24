@@ -2,6 +2,7 @@ package pl.landas.systemrezerwacji.service;
 
 import org.springframework.stereotype.Service;
 import pl.landas.systemrezerwacji.dto.FirmaRequest;
+import pl.landas.systemrezerwacji.exception.WlascicielNieIstniejeException;
 import pl.landas.systemrezerwacji.model.Firma;
 import pl.landas.systemrezerwacji.model.Wlasciciel;
 import pl.landas.systemrezerwacji.repository.FirmaRepository;
@@ -22,7 +23,7 @@ public class FirmaService {
     public Firma dodajFirme(FirmaRequest request) {
         Wlasciciel wlasciciel = wlascicielRepository
                 .findById(request.wlascicielId())
-                .orElseThrow(() -> new IllegalArgumentException("Właściciel o podanym ID nie istnieje."));
+                .orElseThrow(() -> new WlascicielNieIstniejeException("Właściciel o podanym ID nie istnieje."));
 
         Firma firma = new Firma(
                 request.nazwaFirmy(),
