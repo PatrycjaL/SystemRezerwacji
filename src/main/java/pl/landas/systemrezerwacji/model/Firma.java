@@ -1,20 +1,35 @@
 package pl.landas.systemrezerwacji.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
+@Entity
 public class Firma {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String nazwaFirmy;
     private String adresFirmy;
     private String nip;
     private String numerTelefonuFirmy;
     private String emailFirmy;
     private boolean aktywna;
+
+    @OneToOne
+    @JoinColumn(name = "wlasciciel_id", nullable = false, unique = true)
     private Wlasciciel wlasciciel;
+
+    @OneToMany(mappedBy = "firma")
     private List<Pracownik> listaPracownikow;
+
+    @OneToMany(mappedBy = "firma")
     private List<Usluga> listaUslug;
+
+    @Enumerated(EnumType.STRING)
     private TrybDzialaniaFirmy trybDzialaniaFirmy;
 
     public Firma(String nazwaFirmy, String adresFirmy, String nip, String numerTelefonuFirmy,
@@ -29,6 +44,13 @@ public class Firma {
         listaPracownikow = new ArrayList<>();
         listaUslug = new ArrayList<>();
         setTrybDzialaniaFirmy(trybDzialaniaFirmy);
+    }
+
+    protected Firma() {
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getNazwaFirmy() {

@@ -1,9 +1,6 @@
 package pl.landas.systemrezerwacji.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 
 @Entity
@@ -11,15 +8,21 @@ public class Usluga {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nazwa;
     private double cena;
     private int czasTrwania;
     private boolean aktywna;
 
-    public Usluga(String nazwaUslugi, double cenaUslugi, int czasTrwaniaUslugi) {
+    @ManyToOne
+    @JoinColumn(name = "firma_id", nullable = false)
+    private Firma firma;
+
+    public Usluga(String nazwaUslugi, double cenaUslugi, int czasTrwaniaUslugi, Firma firma) {
         setNazwa(nazwaUslugi);
         setCena(cenaUslugi);
         setCzasTrwania(czasTrwaniaUslugi);
+        setFirma(firma);
         this.aktywna = true;
     }
 
@@ -44,6 +47,10 @@ public class Usluga {
 
     public boolean isAktywna() {
         return aktywna;
+    }
+
+    public Firma getFirma() {
+        return firma;
     }
 
     public void setNazwa(String nazwa) {
@@ -73,5 +80,12 @@ public class Usluga {
 
     public void dezaktywujUsluge() {
         this.aktywna = false;
+    }
+
+    private void setFirma(Firma firma) {
+        if (firma == null) {
+            throw new IllegalArgumentException("Firma nie może być pusta.");
+        }
+        this.firma = firma;
     }
 }

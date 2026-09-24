@@ -1,11 +1,17 @@
 package pl.landas.systemrezerwacji.model;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class Wlasciciel extends Osoba{
     private String hashHasla;
 
     public Wlasciciel(String imie, String nazwisko, String email, String hashHasla) {
         super(imie, nazwisko, email);
         setHashHasla(hashHasla);
+    }
+
+    protected Wlasciciel() {
     }
 
     public String getHashHasla() {

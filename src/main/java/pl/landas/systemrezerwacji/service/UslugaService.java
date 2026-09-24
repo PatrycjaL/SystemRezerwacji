@@ -2,7 +2,9 @@ package pl.landas.systemrezerwacji.service;
 
 import org.springframework.stereotype.Service;
 import pl.landas.systemrezerwacji.dto.UslugaRequest;
+import pl.landas.systemrezerwacji.model.Firma;
 import pl.landas.systemrezerwacji.model.Usluga;
+import pl.landas.systemrezerwacji.repository.FirmaRepository;
 import pl.landas.systemrezerwacji.repository.UslugaRepository;
 
 import java.util.List;
@@ -12,35 +14,43 @@ import java.util.Optional;
 public class UslugaService {
 
     private final UslugaRepository uslugaRepository;
+    private final FirmaRepository firmaRepository;
 
-    public UslugaService(UslugaRepository uslugaRepository) {
+    public UslugaService(UslugaRepository uslugaRepository, FirmaRepository firmaRepository) {
         this.uslugaRepository = uslugaRepository;
+        this.firmaRepository = firmaRepository;
     }
 
-    public Usluga dodajUsluge(UslugaRequest request) {
+    public Usluga dodajUsluge(Long firmaId, UslugaRequest request) {
+        Optional<Firma> firma = firmaRepository.findById(firmaId);
+
+        if (firma.isEmpty()) {
+            throw new IllegalArgumentException("Firma o podanym ID nie istnieje.");
+        }
 
         Usluga usluga = new Usluga(
                 request.nazwa(),
                 request.cena(),
-                request.czasTrwania()
+                request.czasTrwania(),
+                firma.get()
         );
         return uslugaRepository.save(usluga);
     }
 
-    public List<Usluga> pobierzWszystkieUslugi() {
-        return uslugaRepository.findAll();
+    public List<Usluga> pobierzWszystkieUslugi(Long firmaId) {
+        return uslugaRepository.findByFirmaId(firmaId);
     }
 
-    public List<Usluga> pobierzAktywneUslugi() {
-        return uslugaRepository.findByAktywna(true);
+    public List<Usluga> pobierzAktywneUslugi(Long firmaId) {
+        return uslugaRepository.findByFirmaIdAndAktywna(firmaId, true);
     }
 
-    public Optional<Usluga> pobierzUslugePoId(Long id) {
-        return uslugaRepository.findById(id);
+    public Optional<Usluga> pobierzUslugePoId(Long firmaId, Long id) {
+        return uslugaRepository.findByIdAndFirmaId(id, firmaId);
     }
 
-    public Optional<Usluga> edytujUsluge(Long id, UslugaRequest request) {
-        Optional<Usluga> usluga = uslugaRepository.findById(id);
+    public Optional<Usluga> edytujUsluge(Long firmaId, Long id, UslugaRequest request) {
+        Optional<Usluga> usluga = uslugaRepository.findByIdAndFirmaId(id, firmaId);
 
         if (usluga.isPresent()) {
             Usluga istniejacaUsluga = usluga.get();
@@ -53,8 +63,8 @@ public class UslugaService {
         return Optional.empty();
     }
 
-    public Optional<Usluga> dezaktywujUsluge(Long id) {
-        Optional<Usluga> usluga = uslugaRepository.findById(id);
+    public Optional<Usluga> dezaktywujUsluge(Long firmaId, Long id) {
+        Optional<Usluga> usluga = uslugaRepository.findByIdAndFirmaId(id, firmaId);
 
         if (usluga.isPresent()) {
             Usluga istniejacaUsluga = usluga.get();
