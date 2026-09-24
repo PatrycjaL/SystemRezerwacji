@@ -164,4 +164,8 @@ public class Firma {
         }
         this.trybDzialaniaFirmy = trybDzialaniaFirmy;
     }
+
+    public void zmienTrybDzialaniaFirmy(TrybDzialaniaFirmy nowyTrybDzialaniaFirmy) {
+        setTrybDzialaniaFirmy(nowyTrybDzialaniaFirmy);
+    }
 }

@@ -37,4 +37,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(FirmaNieIstniejeException.class)
+    public ResponseEntity<?> obsluzFirmaNieIstnieje(FirmaNieIstniejeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
+    }
 }

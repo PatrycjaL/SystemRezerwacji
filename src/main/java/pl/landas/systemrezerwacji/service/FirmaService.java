@@ -2,6 +2,8 @@ package pl.landas.systemrezerwacji.service;
 
 import org.springframework.stereotype.Service;
 import pl.landas.systemrezerwacji.dto.FirmaRequest;
+import pl.landas.systemrezerwacji.dto.FirmaUpdateRequest;
+import pl.landas.systemrezerwacji.exception.FirmaNieIstniejeException;
 import pl.landas.systemrezerwacji.exception.WlascicielNieIstniejeException;
 import pl.landas.systemrezerwacji.model.Firma;
 import pl.landas.systemrezerwacji.model.Wlasciciel;
@@ -42,5 +44,29 @@ public class FirmaService {
 
     public List<Firma> pobierzFirmyWlasciciela(Long wlascicielId) {
         return firmaRepository.findByWlascicielId(wlascicielId);
+    }
+
+    public Firma pobierzFirmePoId(Long firmaId) {
+        return firmaRepository.findById(firmaId)
+                .orElseThrow(() -> new FirmaNieIstniejeException("Firma o podanym ID nie istnieje."));
+    }
+
+    public Firma edytujFirme(Long firmaId, FirmaUpdateRequest request) {
+        Firma firma = pobierzFirmePoId(firmaId);
+
+        firma.setNazwaFirmy(request.nazwaFirmy());
+        firma.setAdresFirmy(request.adresFirmy());
+        firma.setNip(request.nipFirmy());
+        firma.setNumerTelefonuFirmy(request.telefonFirmy());
+        firma.setEmailFirmy(request.emailFirmy());
+        firma.zmienTrybDzialaniaFirmy(request.trybDzialaniaFirmy());
+
+        return firmaRepository.save(firma);
+    }
+
+    public Firma dezaktywujFirme(Long firmaId) {
+        Firma firma = pobierzFirmePoId(firmaId);
+        firma.dezaktywujFirme();
+        return firmaRepository.save(firma);
     }
 }
