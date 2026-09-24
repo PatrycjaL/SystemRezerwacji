@@ -23,4 +23,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(bledy);
     }
+
+    @ExceptionHandler(EmailJuzIstniejeException.class)
+    public ResponseEntity<?> obsluzEmailJuzIstnieje(EmailJuzIstniejeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(exception.getMessage());
+    }
 }
